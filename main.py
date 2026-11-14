@@ -30,6 +30,28 @@ class Quiz:
     def check_answer(self, user_answer):
         return user_answer == self.answer
 
+# 정수를 안전하게 입력받는 함수: 올바른 숫자가 들어올 때까지 계속 묻는다
+def read_int(prompt, min_value, max_value):
+    while True:
+        text = input(prompt).strip()          # 앞뒤 공백 제거
+
+        if text == "":                        # 빈 입력 처리
+            print("⚠️ 아무것도 입력하지 않으셨습니다. 숫자를 입력하세요.")
+            continue                          # 처음으로 돌아가 다시 묻기
+
+        try:
+            number = int(text)                # 글자를 숫자로 변환 시도
+        except ValueError:                    # 변환 실패(예: abc)
+            print("⚠️ 숫자만 입력할 수 있습니다.")
+            continue
+
+        if number < min_value or number > max_value:   # 범위 밖 처리
+            print(f"⚠️ {min_value}-{max_value} 사이의 숫자를 입력하세요.")
+            continue
+
+        return number                         # 모든 검사를 통과: 숫자를 돌려주고 끝
+
+
 
 # 기본 퀴즈 5개를 만들어서 리스트로 돌려주는 함수
 def create_default_quizzes():

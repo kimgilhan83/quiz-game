@@ -51,6 +51,36 @@ def read_int(prompt, min_value, max_value):
 
         return number                         # 모든 검사를 통과: 숫자를 돌려주고 끝
 
+# 퀴즈를 한 문제씩 출제하고 채점하는 함수 (감독관)
+def play_quiz(quizzes):
+    # 퀴즈가 하나도 없는 경우: 안내만 하고 돌아간다
+    if len(quizzes) == 0:
+        print("⚠️ 등록된 퀴즈가 없습니다. 먼저 퀴즈를 추가해 주세요.")
+        return None
+
+    total = len(quizzes)    # 전체 문제 수
+    correct = 0             # 맞힌 개수 (점수판, 0에서 시작)
+    print(f"\n📝 퀴즈를 시작합니다! (총 {total}문제)")
+
+    # 퀴즈를 하나씩 꺼내면서 번호(1부터)를 같이 붙인다
+    for index, quiz in enumerate(quizzes, 1):
+        print("-" * 40)
+        print(f"[문제 {index}]")
+        quiz.show()                                   # 문제와 선택지 출력
+        user_answer = read_int("정답 입력: ", 1, len(quiz.choices))
+
+        if quiz.check_answer(user_answer):            # 정답이면 True
+            print("✅ 정답입니다!")
+            correct += 1                              # 점수판에 1점 추가
+        else:
+            print(f"❌ 오답입니다. 정답은 {quiz.answer}번입니다.")
+
+    score = correct * 100 // total                    # 100점 만점으로 환산
+    print("=" * 40)
+    print(f"🏆 결과: {total}문제 중 {correct}문제 정답! ({score}점)")
+    print("=" * 40)
+    return score                                      # 점수를 돌려준다 (나중에 최고 점수 비교에 사용)
+
 
 
 # 기본 퀴즈 5개를 만들어서 리스트로 돌려주는 함수
@@ -96,7 +126,7 @@ try:
         choice = input("선택: ").strip()
 
         if choice == "1":
-            print("퀴즈 풀기는 준비 중입니다.")
+            play_quiz(quizzes)
         elif choice == "2":
             print("퀴즈 추가는 준비 중입니다.")
         elif choice == "3":

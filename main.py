@@ -159,6 +159,9 @@ def create_default_quizzes():
 quizzes = create_default_quizzes()
 
 
+# 최고 점수 게시판: 아직 시험을 안 쳤으니 None(값 없음)에서 시작
+best_score = None
+
 
 # 영업 시작: 가게 전체를 비상 매뉴얼(try) 안에 둔다
 try:
@@ -167,13 +170,20 @@ try:
         choice = input("선택: ").strip()
 
         if choice == "1":
-            play_quiz(quizzes)
+            score = play_quiz(quizzes)        # 시험을 치르고 점수를 받아 온다
+            if score is not None:             # 퀴즈가 없어서 None이 돌아온 경우는 제외
+                if best_score is None or score > best_score:
+                    best_score = score        # 게시판 갱신
+                    print("🎉 새로운 최고 점수입니다!")
         elif choice == "2":
             add_quiz(quizzes)
         elif choice == "3":
             show_quiz_list(quizzes)
         elif choice == "4":
-            print("점수 확인은 준비 중입니다.")
+            if best_score is None:
+                print("⚠️ 아직 퀴즈를 풀지 않았습니다.")
+            else:
+                print(f"🏆 최고 점수: {best_score}점")
         elif choice == "5":
             print("게임을 종료합니다. 안녕히 가세요!")
             break

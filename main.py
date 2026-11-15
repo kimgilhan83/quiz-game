@@ -155,41 +155,54 @@ def create_default_quizzes():
     ]
 
 
-# 가게 문 열기 전에 기본 퀴즈를 진열대(quizzes)에 올려 둔다
-quizzes = create_default_quizzes()
+# 게임 전체를 운영하는 가게 매니저(클래스)
+class QuizGame:
+    # 가게를 열 때 자동 실행: 진열대와 게시판을 준비한다
+    def __init__(self):
+        self.quizzes = create_default_quizzes()   # 퀴즈 진열대
+        self.best_score = None                    # 최고 점수 게시판
 
+    # 퀴즈 풀기: 시험을 치르고 최고 점수를 갱신한다
+    def play(self):
+        score = play_quiz(self.quizzes)
+        if score is not None:
+            if self.best_score is None or score > self.best_score:
+                self.best_score = score
+                print("🎉 새로운 최고 점수입니다!")
 
-# 최고 점수 게시판: 아직 시험을 안 쳤으니 None(값 없음)에서 시작
-best_score = None
-
-
-# 영업 시작: 가게 전체를 비상 매뉴얼(try) 안에 둔다
-try:
-    while True:
-        show_menu()
-        choice = input("선택: ").strip()
-
-        if choice == "1":
-            score = play_quiz(quizzes)        # 시험을 치르고 점수를 받아 온다
-            if score is not None:             # 퀴즈가 없어서 None이 돌아온 경우는 제외
-                if best_score is None or score > best_score:
-                    best_score = score        # 게시판 갱신
-                    print("🎉 새로운 최고 점수입니다!")
-        elif choice == "2":
-            add_quiz(quizzes)
-        elif choice == "3":
-            show_quiz_list(quizzes)
-        elif choice == "4":
-            if best_score is None:
-                print("⚠️ 아직 퀴즈를 풀지 않았습니다.")
-            else:
-                print(f"🏆 최고 점수: {best_score}점")
-        elif choice == "5":
-            print("게임을 종료합니다. 안녕히 가세요!")
-            break
+    # 점수 확인: 게시판을 보여 준다
+    def show_best_score(self):
+        if self.best_score is None:
+            print("⚠️ 아직 퀴즈를 풀지 않았습니다.")
         else:
-            print("잘못된 입력입니다. 1-5 사이의 숫자를 입력하세요.")
+            print(f"🏆 최고 점수: {self.best_score}점")
 
-# 비상 매뉴얼: Ctrl+C 또는 Ctrl+D가 눌리면 여기로 온다
-except (KeyboardInterrupt, EOFError):
-    print("\n입력이 중단되었습니다. 안전하게 종료합니다.")
+    # 영업 시작: 5번(종료)을 누를 때까지 메뉴를 반복한다
+    def run(self):
+        try:
+            while True:
+                show_menu()
+                choice = input("선택: ").strip()
+
+                if choice == "1":
+                    self.play()
+                elif choice == "2":
+                    add_quiz(self.quizzes)
+                elif choice == "3":
+                    show_quiz_list(self.quizzes)
+                elif choice == "4":
+                    self.show_best_score()
+                elif choice == "5":
+                    print("게임을 종료합니다. 안녕히 가세요!")
+                    break
+                else:
+                    print("잘못된 입력입니다. 1-5 사이의 숫자를 입력하세요.")
+
+        # 비상 매뉴얼: Ctrl+C 또는 Ctrl+D가 눌리면 여기로 온다
+        except (KeyboardInterrupt, EOFError):
+            print("\n입력이 중단되었습니다. 안전하게 종료합니다.")
+
+
+# 가게 문 열기: 매니저를 고용하고 영업을 시작한다
+game = QuizGame()
+game.run()

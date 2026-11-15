@@ -81,7 +81,19 @@ def play_quiz(quizzes):
     print("=" * 40)
     return score                                      # 점수를 돌려준다 (나중에 최고 점수 비교에 사용)
 
+# 등록된 퀴즈 목록을 보여 주는 함수 (재고 목록표)
+def show_quiz_list(quizzes):
+    # 퀴즈가 하나도 없는 경우
+    if len(quizzes) == 0:
+        print("⚠️ 등록된 퀴즈가 없습니다.")
+        return
 
+    print(f"\n📋 등록된 퀴즈 목록 (총 {len(quizzes)}개)")
+    print("-" * 40)
+    # 번호(1부터)와 문제만 한 줄씩 출력
+    for index, quiz in enumerate(quizzes, 1):
+        print(f"[{index}] {quiz.question}")
+    print("-" * 40)
 
 # 기본 퀴즈 5개를 만들어서 리스트로 돌려주는 함수
 def create_default_quizzes():
@@ -130,7 +142,7 @@ try:
         elif choice == "2":
             print("퀴즈 추가는 준비 중입니다.")
         elif choice == "3":
-            print("퀴즈 목록은 준비 중입니다.")
+            show_quiz_list(quizzes)
         elif choice == "4":
             print("점수 확인은 준비 중입니다.")
         elif choice == "5":

@@ -84,19 +84,6 @@ def play_quiz(quizzes):
     print("=" * 40)
     return score                                      # 점수를 돌려준다 (나중에 최고 점수 비교에 사용)
 
-# 등록된 퀴즈 목록을 보여 주는 함수 (재고 목록표)
-def show_quiz_list(quizzes):
-    # 퀴즈가 하나도 없는 경우
-    if len(quizzes) == 0:
-        print("⚠️ 등록된 퀴즈가 없습니다.")
-        return
-
-    print(f"\n📋 등록된 퀴즈 목록 (총 {len(quizzes)}개)")
-    print("-" * 40)
-    # 번호(1부터)와 문제만 한 줄씩 출력
-    for index, quiz in enumerate(quizzes, 1):
-        print(f"[{index}] {quiz.question}")
-    print("-" * 40)
 
 # 글자를 안전하게 입력받는 함수: 빈 입력이면 다시 묻는다
 def read_text(prompt):
@@ -177,6 +164,20 @@ class QuizGame:
         else:
             print(f"🏆 최고 점수: {self.best_score}점")
 
+    # 퀴즈 목록: 진열대에 있는 퀴즈를 번호와 함께 보여 준다
+    def show_list(self):
+        # 퀴즈가 하나도 없는 경우
+        if len(self.quizzes) == 0:
+            print("⚠️ 등록된 퀴즈가 없습니다.")
+            return
+
+        print(f"\n📋 등록된 퀴즈 목록 (총 {len(self.quizzes)}개)")
+        print("-" * 40)
+        # 번호(1부터)와 문제만 한 줄씩 출력
+        for index, quiz in enumerate(self.quizzes, 1):
+            print(f"[{index}] {quiz.question}")
+        print("-" * 40)
+
     # 영업 시작: 5번(종료)을 누를 때까지 메뉴를 반복한다
     def run(self):
         try:
@@ -189,7 +190,7 @@ class QuizGame:
                 elif choice == "2":
                     add_quiz(self.quizzes)
                 elif choice == "3":
-                    show_quiz_list(self.quizzes)
+                    self.show_list()
                 elif choice == "4":
                     self.show_best_score()
                 elif choice == "5":

@@ -95,6 +95,32 @@ def show_quiz_list(quizzes):
         print(f"[{index}] {quiz.question}")
     print("-" * 40)
 
+# 글자를 안전하게 입력받는 함수: 빈 입력이면 다시 묻는다
+def read_text(prompt):
+    while True:
+        text = input(prompt).strip()          # 앞뒤 공백 제거
+        if text == "":                        # 빈 입력 처리
+            print("⚠️ 아무것도 입력하지 않으셨습니다. 내용을 입력하세요.")
+            continue
+        return text
+
+
+# 새 퀴즈를 입력받아 진열대에 추가하는 함수 (입고 담당자)
+def add_quiz(quizzes):
+    print("\n📌 새로운 퀴즈를 추가합니다.")
+    question = read_text("문제를 입력하세요: ")
+
+    choices = []                              # 빈 리스트(빈 상자)를 준비
+    for number in range(1, 5):                # 1, 2, 3, 4를 차례로 반복
+        text = read_text(f"선택지 {number}: ")
+        choices.append(text)                  # 상자 맨 끝에 하나씩 담기
+
+    answer = read_int("정답 번호 (1-4): ", 1, 4)
+
+    new_quiz = Quiz(question, choices, answer)   # 상품 완성
+    quizzes.append(new_quiz)                     # 진열대 맨 끝에 올리기
+    print("✅ 퀴즈가 추가되었습니다!")
+
 # 기본 퀴즈 5개를 만들어서 리스트로 돌려주는 함수
 def create_default_quizzes():
     return [
@@ -140,7 +166,7 @@ try:
         if choice == "1":
             play_quiz(quizzes)
         elif choice == "2":
-            print("퀴즈 추가는 준비 중입니다.")
+            add_quiz(quizzes)
         elif choice == "3":
             show_quiz_list(quizzes)
         elif choice == "4":

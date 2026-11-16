@@ -33,6 +33,20 @@ class Quiz:
     def check_answer(self, user_answer):
         return user_answer == self.answer
 
+    # 기능 3: 퀴즈를 저장용 딕셔너리로 포장한다
+    def to_dict(self):
+        return {
+            "question": self.question,
+            "choices": self.choices,
+            "answer": self.answer,
+        }
+
+    # 기능 4: 딕셔너리를 풀어서 퀴즈 상품으로 복원한다
+    # @staticmethod: 상품이 아직 없어도 "Quiz.from_dict(...)"로 부를 수 있는 기능
+    @staticmethod
+    def from_dict(data):
+        return Quiz(data["question"], data["choices"], data["answer"])
+
 # 정수를 안전하게 입력받는 함수: 올바른 숫자가 들어올 때까지 계속 묻는다
 def read_int(prompt, min_value, max_value):
     while True:
@@ -202,6 +216,14 @@ class QuizGame:
         # 비상 매뉴얼: Ctrl+C 또는 Ctrl+D가 눌리면 여기로 온다
         except (KeyboardInterrupt, EOFError):
             print("\n입력이 중단되었습니다. 안전하게 종료합니다.")
+
+# ----- 임시 테스트 (확인 후 지울 예정) -----
+q = Quiz("테스트 문제?", ["가", "나", "다", "라"], 2)
+d = q.to_dict()
+print("포장:", d)
+q2 = Quiz.from_dict(d)
+print("복원:", q2.question, q2.choices, q2.answer)
+# ----- 임시 테스트 끝 -----
 
 
 # 가게 문 열기: 매니저를 고용하고 영업을 시작한다

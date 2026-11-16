@@ -73,3 +73,5 @@ quiz-game/
 | `choices` | 선택지 4개 (문자열 리스트) |
 | `answer` | 정답 번호, 1~4 (정수) |
 | `best_score` | 최고 점수. 아직 풀지 않았다면 `null` |
+
+> clone/pull 실습: 복제한 저장소에서 작성한 줄입니다.

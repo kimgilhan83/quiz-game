@@ -1,5 +1,9 @@
 # 한글 입력 후 백스페이스를 눌러도 글자가 깨지지 않게 해 주는 입력 도우미
-import readline
+# (리눅스·맥에만 있는 도구라서, 없는 환경(윈도우)에서는 건너뛴다)
+try:
+    import readline
+except ImportError:
+    pass
 import json
 import os
 

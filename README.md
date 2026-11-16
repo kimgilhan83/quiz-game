@@ -42,6 +42,8 @@ quiz-game/
 ├── main.py        # 프로그램 전체 (Quiz, QuizGame 클래스 포함)
 ├── README.md      # 프로젝트 설명서
 ├── .gitignore     # Git이 추적하지 않을 파일 목록
+├── docs/
+│   └── execution-log.md   # 터미널 실행 결과 로그
 └── state.json     # (실행 시 자동 생성) 퀴즈와 최고 점수 저장 파일
 ```
 

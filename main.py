@@ -215,15 +215,6 @@ class QuizGame:
 
         # 비상 매뉴얼: Ctrl+C 또는 Ctrl+D가 눌리면 여기로 온다
         except (KeyboardInterrupt, EOFError):
-            print("\n입력이 중단되었습니다. 안전하게 종료합니다.")
-
-# ----- 임시 테스트 (확인 후 지울 예정) -----
-q = Quiz("테스트 문제?", ["가", "나", "다", "라"], 2)
-d = q.to_dict()
-print("포장:", d)
-q2 = Quiz.from_dict(d)
-print("복원:", q2.question, q2.choices, q2.answer)
-# ----- 임시 테스트 끝 -----
 
 
 # 가게 문 열기: 매니저를 고용하고 영업을 시작한다

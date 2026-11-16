@@ -1,5 +1,11 @@
 # 한글 입력 후 백스페이스를 눌러도 글자가 깨지지 않게 해 주는 입력 도우미
 import readline
+import json
+import os
+
+# 장부 파일 경로: main.py가 있는 폴더(프로젝트 루트)의 state.json
+# __file__은 이 파일 자신의 위치이고, 이렇게 쓰면 어느 폴더에서 실행해도 같은 장부를 쓴다
+STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "state.json")
 
 # 메뉴 화면을 보여 주는 함수 (레시피에 이름표 붙이기)
 def show_menu():
@@ -162,6 +168,7 @@ class QuizGame:
     def __init__(self):
         self.quizzes = create_default_quizzes()   # 퀴즈 진열대
         self.best_score = None                    # 최고 점수 게시판
+        self.load()
 
     # 퀴즈 풀기: 시험을 치르고 최고 점수를 갱신한다
     def play(self):
@@ -192,17 +199,60 @@ class QuizGame:
             print(f"[{index}] {quiz.question}")
         print("-" * 40)
 
+    # 장부 쓰기: 현재 상태를 state.json에 저장한다
+    def save(self):
+        quiz_dicts = []                          # 포장한 퀴즈를 담을 빈 상자
+        for quiz in self.quizzes:
+            quiz_dicts.append(quiz.to_dict())    # 퀴즈를 하나씩 포장해서 담기
+
+        data = {
+            "quizzes": quiz_dicts,
+            "best_score": self.best_score,
+        }
+        try:
+            with open(STATE_FILE, "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent=4)
+        except OSError:
+            print("⚠️ 저장에 실패했습니다. (파일 쓰기 오류)")
+
+    # 장부 읽기: state.json이 있으면 불러오고, 없거나 망가졌으면 기본값을 쓴다
+    def load(self):
+        # 장부가 없는 경우(첫 실행): 기본 퀴즈로 시작
+        if not os.path.exists(STATE_FILE):
+            print("📂 저장된 데이터가 없어 기본 퀴즈로 시작합니다.")
+            return
+
+        try:
+            with open(STATE_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            loaded_quizzes = []                  # 임시 상자에 먼저 모은다
+            for item in data["quizzes"]:
+                loaded_quizzes.append(Quiz.from_dict(item))   # 하나씩 조립
+            loaded_best = data["best_score"]
+        # 읽기 오류, 내용 깨짐, 항목 누락, 모양이 다름: 모두 "손상"으로 본다
+        except (OSError, ValueError, KeyError, TypeError):
+            print("⚠️ 저장 파일이 손상되어 기본 퀴즈로 초기화합니다.")
+            return
+
+        # 끝까지 성공했을 때만 진열대를 교체한다
+        self.quizzes = loaded_quizzes
+        self.best_score = loaded_best
+        score_text = "없음" if loaded_best is None else f"{loaded_best}점"
+        print(f"📂 저장된 데이터를 불러왔습니다. (퀴즈 {len(self.quizzes)}개, 최고점수 {score_text})")
+
     # 영업 시작: 5번(종료)을 누를 때까지 메뉴를 반복한다
     def run(self):
         try:
             while True:
                 show_menu()
                 choice = input("선택: ").strip()
-
                 if choice == "1":
                     self.play()
+                    self.save()                   # ← 추가 (1번 직후)
                 elif choice == "2":
                     add_quiz(self.quizzes)
+                    self.save()                   # ← 추가 (2번 직후)
                 elif choice == "3":
                     self.show_list()
                 elif choice == "4":
@@ -215,7 +265,8 @@ class QuizGame:
 
         # 비상 매뉴얼: Ctrl+C 또는 Ctrl+D가 눌리면 여기로 온다
         except (KeyboardInterrupt, EOFError):
-
+            print("\n입력이 중단되었습니다. 안전하게 종료합니다.")
+            self.save()                           # ← 추가
 
 # 가게 문 열기: 매니저를 고용하고 영업을 시작한다
 game = QuizGame()

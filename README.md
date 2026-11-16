@@ -75,3 +75,7 @@ quiz-game/
 | `best_score` | 최고 점수. 아직 풀지 않았다면 `null` |
 
 > clone/pull 실습: 복제한 저장소에서 작성한 줄입니다.
+
+## 실행 로그
+
+터미널 실행 결과는 [docs/execution-log.md](docs/execution-log.md)에서 확인할 수 있습니다.
